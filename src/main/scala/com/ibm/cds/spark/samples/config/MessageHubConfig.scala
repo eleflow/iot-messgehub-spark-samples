@@ -17,7 +17,6 @@ import org.codehaus.jettison.json.JSONObject
  * @author dtaieb
  */
 class MessageHubConfig extends DemoConfig{  
-  lazy val kafkaOptionKeys = ListBuffer[String]()
   override def initConfigKeys(){
     config = config ++ Map[String,String]( 
       registerConfigKey(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG),
@@ -52,7 +51,6 @@ class MessageHubConfig extends DemoConfig{
   }
 
   override private[config] def registerConfigKey( key: String, default: String = null ) : (String,String) = {
-    kafkaOptionKeys += key
     super.registerConfigKey(key,default)
   }
   
@@ -62,7 +60,7 @@ class MessageHubConfig extends DemoConfig{
   }
   
   def copyKafkaOptionKeys(other:MessageHubConfig){
-    kafkaOptionKeys.foreach { key => other.setConfig(key, getConfig(key) ) }
+    config.keys.foreach { key => other.setConfig(key, getConfig(key) ) }
   }
   
   def setValueSerializer[U]()(implicit c: ClassTag[U]){
