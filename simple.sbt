@@ -1,6 +1,10 @@
+organization := "br.com.eleflow"
+
+organizationName := "Eleflow"
+
 name := "streaming-kafka"
 
-version := "1.6"
+version := "1.0"
 
 scalaVersion := "2.10.4"
 
