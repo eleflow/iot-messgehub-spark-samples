@@ -19,24 +19,37 @@ import org.codehaus.jettison.json.JSONObject
 class MessageHubConfig extends DemoConfig{  
   lazy val kafkaOptionKeys = ListBuffer[String]()
   override def initConfigKeys(){
-    config = config ++ Map[String,String]( 
+    config = config ++ Map[String,String](
       registerConfigKey(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG),
-      registerConfigKey(CommonClientConfigs.CLIENT_ID_CONFIG, "demo.watson.twitter.messagehub"),
-      registerConfigKey("auto.offset.reset", "latest"),
-      registerConfigKey("acks", "-1"),
-      registerConfigKey("retries", "0"),
-      registerConfigKey("batch.size", "16384"),
-      registerConfigKey("linger.ms", "1"),
-      registerConfigKey("buffer.memory", "33554432"),
-      registerConfigKey("key.serializer", "org.apache.kafka.common.serialization.StringSerializer"),
-      registerConfigKey("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer"),
-      registerConfigKey(SslConfigs.SSL_PROTOCOL_CONFIG, "TLSv1.2"),
-      registerConfigKey(SslConfigs.SSL_ENABLED_PROTOCOLS_CONFIG, "TLSv1.2"),
-      registerConfigKey(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, "JKS"),
-      registerConfigKey(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, getDefaultSSLTrustStoreLocation),
-      registerConfigKey(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, "changeit"),
-      registerConfigKey(SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG, "HTTPS"),
-      registerConfigKey(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_SSL" ),
+      registerConfigKey(CommonClientConfigs.CLIENT_ID_CONFIG, getCorrectDefaultValue(config, CommonClientConfigs.CLIENT_ID_CONFIG,
+        "demo.watson.twitter.messagehub")),
+      registerConfigKey("auto.offset.reset", getCorrectDefaultValue(config, "auto.offset.reset",
+        "latest")),
+      registerConfigKey("acks", getCorrectDefaultValue(config, "acks", "-1")),
+      registerConfigKey("retries", getCorrectDefaultValue(config, "retries", "0")),
+      registerConfigKey("batch.size",getCorrectDefaultValue(config, "batch.size", "16384")),
+      registerConfigKey("linger.ms", getCorrectDefaultValue(config, "linger.ms", "1")),
+      registerConfigKey("buffer.memory",getCorrectDefaultValue(config, "buffer.memory",
+        "33554432")),
+      registerConfigKey("key.serializer", getCorrectDefaultValue(config, "key.serializer",
+        "org.apache.kafka.common.serialization.StringSerializer")),
+      registerConfigKey("key.deserializer", getCorrectDefaultValue(config, "key.deserializer",
+        "org.apache.kafka.common.serialization.StringDeserializer")),
+      registerConfigKey(SslConfigs.SSL_PROTOCOL_CONFIG, getCorrectDefaultValue(config,
+        SslConfigs.SSL_PROTOCOL_CONFIG, "TLSv1.2")),
+      registerConfigKey(SslConfigs.SSL_ENABLED_PROTOCOLS_CONFIG, getCorrectDefaultValue(config,
+        SslConfigs.SSL_ENABLED_PROTOCOLS_CONFIG, "TLSv1.2")),
+      registerConfigKey(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, getCorrectDefaultValue(config,
+        SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, "JKS")),
+      registerConfigKey(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, getCorrectDefaultValue(config,
+        SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, getDefaultSSLTrustStoreLocation)),
+      registerConfigKey(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, getCorrectDefaultValue(config,
+        SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, "changeit")),
+      registerConfigKey(SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG,
+        getCorrectDefaultValue(config, SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG,
+          "HTTPS")),
+      registerConfigKey(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, getCorrectDefaultValue(config,
+        CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_SSL" )),
       
       registerConfigKey(MessageHubConfig.KAFKA_USER_NAME),
       registerConfigKey(MessageHubConfig.KAFKA_USER_PASSWORD),
@@ -44,7 +57,12 @@ class MessageHubConfig extends DemoConfig{
       registerConfigKey(MessageHubConfig.MESSAGEHUB_REST_URL)
     )    
   }
-  
+
+  private def getCorrectDefaultValue(userAddedValues: scala.collection.mutable.Map[String,String],
+                                     fieldName: String, defaultValue: String): String = {
+    userAddedValues.get(CommonClientConfigs.CLIENT_ID_CONFIG).getOrElse(defaultValue)
+  }
+
   private def getDefaultSSLTrustStoreLocation():String={
     val javaHome = System.getProperty("java.home") + File.separator + "lib" + File.separator + "security" + File.separator + "cacerts"
     println("default location of ssl Trust store is: " + javaHome)
