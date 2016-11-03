@@ -4,13 +4,13 @@ organizationName := "Eleflow"
 
 name := "streaming-kafka"
 
-version := "1.5-SNAPSHOT"
+version := "1.7-SNAPSHOT"
 
 scalaVersion := "2.10.6"
 
 libraryDependencies ++= {
   val kafkaVersion = "0.9.0.0"
-  val sparkVersion =  "1.6.0"
+  val sparkVersion =  "1.6.1"
   Seq(
 //    "org.http4s" %% "blaze-http" % "0.12.3",
 //    "org.http4s" %% "http4s-core" % "0.12.3",
