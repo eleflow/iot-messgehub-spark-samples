@@ -4,20 +4,24 @@ organizationName := "Eleflow"
 
 name := "streaming-kafka"
 
-version := "1.0"
+version := "1.5-SNAPSHOT"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.10.6"
 
 libraryDependencies ++= {
+  val kafkaVersion = "0.9.0.0"
   val sparkVersion =  "1.6.0"
   Seq(
+//    "org.http4s" %% "blaze-http" % "0.12.3",
+//    "org.http4s" %% "http4s-core" % "0.12.3",
+//    "org.http4s" %% "http4s-client" % "0.12.3",
     "org.apache.spark" %%  "spark-core"	  %  sparkVersion % "provided",
     "org.apache.spark" %%  "spark-sql"  %  sparkVersion % "provided",
     "org.apache.spark" %%  "spark-streaming"	  %  sparkVersion % "provided",
     "org.apache.spark" %% "spark-repl" % sparkVersion % "provided",
-    "org.apache.kafka" % "kafka-log4j-appender" % "0.9.0.0",
-    "org.apache.kafka" % "kafka-clients" % "0.9.0.0",
-    "org.apache.kafka" %% "kafka" % "0.9.0.0"
+    "org.apache.kafka" % "kafka-log4j-appender" % kafkaVersion,
+    "org.apache.kafka" % "kafka-clients" % kafkaVersion,
+    "org.apache.kafka" %% "kafka" % kafkaVersion
   )
 }
 

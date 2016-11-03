@@ -12,9 +12,9 @@ import org.apache.spark.storage.StorageLevel
 import org.apache.spark.streaming.StreamingContext
 import org.apache.spark.streaming.dstream._
 import org.apache.spark.streaming.receiver.Receiver
-import org.apache.log4j.Level
-import org.apache.log4j.Logger
+import org.apache.log4j.{Level, LogManager, Logger}
 import java.util.Properties
+
 import com.ibm.cds.spark.samples.config.MessageHubConfig
 import org.apache.kafka.common.security.JaasUtils
 
@@ -56,7 +56,9 @@ class KafkaReceiver[
     kafkaParams: Map[String,String],
     topics: List[String],
     storageLevel: StorageLevel
-  ) extends Receiver[(K, V)](storageLevel) with Logging {
+  ) extends Receiver[(K, V)](storageLevel)  {
+
+  val log = LogManager.getRootLogger
 
   // Connection to Kafka
   var kafkaConsumer: KafkaConsumer[K,V] = null
@@ -72,7 +74,7 @@ class KafkaReceiver[
   }
 
   def onStart() {
-    logInfo("Starting Kafka Consumer Stream")
+    log.info("Starting Kafka Consumer Stream")
     
     //Make sure the Jaas Login config param is set
     val jaasLoginParam = System.getProperty(JaasUtils.JAVA_LOGIN_CONFIG_PARAM);
@@ -92,27 +94,27 @@ class KafkaReceiver[
       def run(){
         try{
 			    while( kafkaConsumer != null ){
-            var it:Iterator[ConsumerRecord[K, V]] = null;
+
             
             if ( kafkaConsumer != null ){
               kafkaConsumer.synchronized{     
                 //Poll for new events
-                it = kafkaConsumer.poll(1000L).iterator              
-                while( it != null && it.hasNext() ){
+                val it:Iterator[ConsumerRecord[K, V]]  = kafkaConsumer.poll(1000L).iterator
+                while( it != null && it.hasNext ){
                   //Get the record and store it
-                  val record = it.next();
+                  val record = it.next()
                   store( (record.key, record.value) )
                 }            
                 kafkaConsumer.commitSync
               }
-            }            
-
-            Thread.sleep( 1000L )
-          }  
-          println("Exiting Thread")
+            }
+            log.error(kafkaConsumer.metrics().mkString(","))
+//            Thread.sleep(1000l)
+          }
+          log.error("Exiting Thread")
         }catch{
           case e:Throwable => {
-            reportError( "Error in KafkaConsumer thread", e);
+            reportError( "Error in KafkaConsumer thread", e)
             e.printStackTrace()
           }
         }
