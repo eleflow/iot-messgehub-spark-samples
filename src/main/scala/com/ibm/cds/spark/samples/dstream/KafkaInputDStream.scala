@@ -58,7 +58,7 @@ class KafkaReceiver[
     storageLevel: StorageLevel
   ) extends Receiver[(K, V)](storageLevel)  {
 
-  val log = LogManager.getRootLogger
+//  val log = LogManager.getRootLogger
 
   // Connection to Kafka
   var kafkaConsumer: KafkaConsumer[K,V] = null
@@ -74,7 +74,7 @@ class KafkaReceiver[
   }
 
   def onStart() {
-    log.info("Starting Kafka Consumer Stream")
+//    log.info("Starting Kafka Consumer Stream")
     
     //Make sure the Jaas Login config param is set
     val jaasLoginParam = System.getProperty(JaasUtils.JAVA_LOGIN_CONFIG_PARAM);
@@ -108,10 +108,10 @@ class KafkaReceiver[
                 kafkaConsumer.commitSync
               }
             }
-            log.error(kafkaConsumer.metrics().mkString(","))
+//            log.error(kafkaConsumer.metrics().mkString(","))
 //            Thread.sleep(1000l)
           }
-          log.error("Exiting Thread")
+//          log.error("Exiting Thread")
         }catch{
           case e:Throwable => {
             reportError( "Error in KafkaConsumer thread", e)
